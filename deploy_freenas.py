@@ -48,7 +48,7 @@ def deploy():
         deploy = config['deploy']
     else:
         print("Config file", args.config, "does not exist!")
-        exit(1)
+        raise SystemExit(1)
 
     # We'll use the API key if provided
     API_KEY = deploy.get('api_key')
@@ -89,7 +89,7 @@ def deploy():
         session.auth = (USER, PASSWORD)
     else:
         print("Unable to authenticate. Specify 'api_key' or 'password' in the config.")
-        exit(1)
+        raise SystemExit(1)
 
     # Load cert/key
     with open(PRIVATEKEY_PATH, 'r') as file:
@@ -117,7 +117,7 @@ def deploy():
     else:
         print("Error importing certificate!")
         print(r.text)
-        sys.exit(1)
+        raise SystemExit(1)
 
     # Sleep for a few seconds to let the cert propagate
     time.sleep(5)
@@ -136,7 +136,7 @@ def deploy():
     else:
         print("Error listing certificates!")
         print(r.text)
-        sys.exit(1)
+        raise SystemExit(1)
 
     # Parse certificate list to find the id that matches our cert name
     cert_list = r.json()
@@ -150,7 +150,7 @@ def deploy():
 
     if not new_cert_data:
         print("Error searching for newly imported certificate in certificate list.")
-        sys.exit(1)
+        raise SystemExit(1)
 
     if UI_CERTIFICATE_ENABLED:
         # Set our cert as active
@@ -167,7 +167,7 @@ def deploy():
         else:
             print("Error setting active certificate!")
             print(r.text)
-            sys.exit(1)
+            raise SystemExit(1)
 
     if S3_ENABLED:
         # Set our cert as active for S3 plugin
@@ -184,7 +184,7 @@ def deploy():
         else:
             print("Error setting active S3 certificate!")
             print(r)
-            sys.exit(1)
+            raise SystemExit(1)
 
     if FTP_ENABLED:
         # Set our cert as active for FTP plugin
@@ -201,7 +201,7 @@ def deploy():
         else:
             print("Error setting active FTP certificate!")
             print(r.text)
-            sys.exit(1)
+            raise SystemExit(1)
 
     if WEBDAV_ENABLED:
         # Set our cert as active for WEBDAV plugin
@@ -218,7 +218,7 @@ def deploy():
         else:
             print("Error setting active WEBDAV certificate!")
             print(r)
-            sys.exit(1)
+            raise SystemExit(1)
 
     # Get expired and old certs with same SAN
     cert_ids_same_san = set()
@@ -258,7 +258,7 @@ def deploy():
         else:
             print("Error deleting certificate " + cert_name + "!")
             print(r.text)
-            sys.exit(1)
+            raise SystemExit(1)
 
     # Reload minio with new cert
     if S3_ENABLED:
@@ -285,7 +285,7 @@ def deploy():
         else:
             print("Error getting apps")
             print(r)
-            sys.exit(1)
+            raise SystemExit(1)
 
         apps = r.json()
         for app in apps:
@@ -312,7 +312,7 @@ def deploy():
                 else:
                     print(f"Failed setting certificate for {app['name']}")
                     print(r)
-                    sys.exit(1)
+                    raise SystemExit(1)
 
     if UI_CERTIFICATE_ENABLED:
         # Reload nginx with new cert
@@ -330,7 +330,7 @@ def deploy():
         elif r.status_code != 405:
             print("Error reloading WebUI!")
             print(r.text)
-            sys.exit(1)
+            raise SystemExit(1)
         else:
             try:
                 r = session.get(
@@ -340,7 +340,7 @@ def deploy():
                 # If we've arrived here, something went wrong
                 print("Error reloading WebUI!")
                 print(r.text)
-                sys.exit(1)
+                raise SystemExit(1)
             except requests.exceptions.ConnectionError:
                 print("Reloading WebUI successful")
                 print("deploy_freenas.py executed successfully")
