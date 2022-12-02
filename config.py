@@ -31,7 +31,7 @@ def schedule_job(configs: Configs, job):
                 task = task.weeks
             case _:
                 pass
-        if config["at"]:
+        if "at" in config and config["at"] is not None:
             task = task.at(config["at"])
         task.do(job)
         
