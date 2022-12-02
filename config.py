@@ -33,7 +33,11 @@ def schedule_job(configs: Configs, job):
                 pass
         if "at" in config and config["at"] is not None:
             task = task.at(config["at"])
-        task.do(job)
+        def wrapper():
+            job()
+            time_of_next_run = schedule.next_run()
+            print(f"Next run will be {time_of_next_run}")
+        task.do(wrapper)
         
 if __name__ == "__main__":
     configs = parse_config("config/config.json")
