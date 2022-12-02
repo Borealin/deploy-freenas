@@ -9,7 +9,7 @@ if __name__ == "__main__":
                 os.path.dirname(os.path.realpath(__file__)),
                 'config'
             ),
-            'config.py'
+            'config.json'
         ))
     schedule_job(configs, deploy)
     while True:
