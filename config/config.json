@@ -1,7 +1,6 @@
 [
     {
         "every": 1,
-        "time_scale": "days",
-        "at": "04:00"
+        "time_scale": "minutes"
     }
 ]
