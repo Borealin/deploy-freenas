@@ -326,7 +326,7 @@ def deploy():
         if r.status_code == 200:
             print("Reloading WebUI successful")
             print("deploy_freenas.py executed successfully")
-            sys.exit(0)
+            raise SystemExit(0)
         elif r.status_code != 405:
             print("Error reloading WebUI!")
             print(r.text)
